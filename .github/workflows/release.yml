@@ -23,6 +23,6 @@ jobs:
             artifacts: "*.tar.gz"
             body: "v2.0.0"
             generateReleaseNotes: false
-            name: "TCET-Linux"
+            name: "TCET-Linux Repo"
             tag: ${{ env.DATE }}
             
