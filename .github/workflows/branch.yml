@@ -14,6 +14,17 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
+      - name: Check Branch Exist
+        run: |
+          BRANCH_NAME=$(echo "$ISSUE_NUMBER-$ISSUE_TITLE")
+          new_branch_name=$(echo "$BRANCH_NAME" | sed 's/[][BUG]//g')
+          new_branch_name=$(echo "$new_branch_name" | sed -e "s/ /-/g")
+          if git show-ref --quiet "refs/heads/$new_branch_name"; then
+            echo "BRANCH_EXISTS=true" >> $GITHUB_ENV
+          else
+            echo "BRANCH_EXISTS=false" >> $GITHUB_ENV
+          fi
+          
       - name: Create branch from issue
         env:
           SOURCE_BRANCH: main
@@ -29,9 +40,11 @@ jobs:
           ISSUE_TITLE=$(jq --raw-output .issue.title "$GITHUB_EVENT_PATH")
           ISSUE_NUMBER=$(jq --raw-output .issue.number "$GITHUB_EVENT_PATH")
           ASSIGNee=$(jq --raw-output .issue.assignee.login "$GITHUB_EVENT_PATH")
-          BRANCH_NAME=$(echo "$ISSUE_NUMBER-$ISSUE_TITLE")
-          new_branch_name=$(echo "$BRANCH_NAME" | sed 's/[][BUG]//g')
-          new_branch_name=$(echo "$new_branch_name" | sed -e "s/ /-/g")
+          
+          if [ "${{ env.BRANCH_EXISTS }}" == "true" ]; then
+            echo "Branch already exists. Skipping branch creation."
+            exit 0
+          fi
 
           # Create a new branch using the assigned issue number
           git checkout -b "$new_branch_name" "$SOURCE_BRANCH"
