@@ -29,8 +29,8 @@ jobs:
           ISSUE_TITLE=$(jq --raw-output .issue.title "$GITHUB_EVENT_PATH")
           ISSUE_NUMBER=$(jq --raw-output .issue.number "$GITHUB_EVENT_PATH")
           ASSIGNee=$(jq --raw-output .issue.assignee.login "$GITHUB_EVENT_PATH")
-          BRANCH_NAME=$(echo "$ISSUE_NUMBER-$ISSUE_TITLE" | tr -d '[:space:]' | tr -d '[:punct:]' | tr '[:upper:]' '[:lower:]')
-          
+          BRANCH_NAME=$(echo "$ISSUE_NUMBER-$ISSUE_TITLE")
+
           # Create a new branch using the assigned issue number
           git checkout -b "$BRANCH_NAME" "$SOURCE_BRANCH"
           git push origin "$NEW_BRANCH"
