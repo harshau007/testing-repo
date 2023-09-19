@@ -46,7 +46,7 @@ jobs:
 
           if [ "${{ env.BRANCH_EXISTS }}" == "true" ]; then
             echo "Branch already exists. Skipping branch creation."
-            exit 0
+            exit 1
           fi
 
           # Create a new branch using the assigned issue number
