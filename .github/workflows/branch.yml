@@ -40,7 +40,10 @@ jobs:
           ISSUE_TITLE=$(jq --raw-output .issue.title "$GITHUB_EVENT_PATH")
           ISSUE_NUMBER=$(jq --raw-output .issue.number "$GITHUB_EVENT_PATH")
           ASSIGNee=$(jq --raw-output .issue.assignee.login "$GITHUB_EVENT_PATH")
-          
+          BRANCH_NAME=$(echo "$ISSUE_NUMBER-$ISSUE_TITLE")
+          new_branch_name=$(echo "$BRANCH_NAME" | sed 's/[][BUG]//g')
+          new_branch_name=$(echo "$new_branch_name" | sed -e "s/ /-/g")
+
           if [ "${{ env.BRANCH_EXISTS }}" == "true" ]; then
             echo "Branch already exists. Skipping branch creation."
             exit 0
