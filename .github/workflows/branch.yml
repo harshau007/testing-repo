@@ -35,4 +35,4 @@ jobs:
 
           # Create a new branch using the assigned issue number
           git checkout -b "$new_branch_name" "$SOURCE_BRANCH"
-          git push origin "$NEW_BRANCH"
+          git push origin "$new_branch_name"
