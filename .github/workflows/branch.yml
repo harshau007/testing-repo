@@ -16,6 +16,13 @@ jobs:
         env:
           SOURCE_BRANCH: main
         run: |
+
+          # Configure git with the GitHub token
+          git config user.email "github-actions@github.com"
+          git config user.name "GitHub Actions"
+          git config credential.helper "store --file=.git-credentials"
+          echo "https://github.com:${{ secrets.TOKEN }}" > .git-credentials
+          
           # Extract the issue number and assignee from the JSON payload
           ISSUE_NUMBER=$(jq --raw-output .issue.number "$GITHUB_EVENT_PATH")
           ASSIGNee=$(jq --raw-output .issue.assignee.login "$GITHUB_EVENT_PATH")
@@ -24,12 +31,6 @@ jobs:
           if [ -f .config ]; then
             SOURCE_BRANCH=$(cat .config)
           fi
-
-          # Configure git with the GitHub token
-          git config user.email "github-actions@github.com"
-          git config user.name "GitHub Actions"
-          git config credential.helper "store --file=.git-credentials"
-          echo "https://github.com:${{ secrets.TOKEN }}" > .git-credentials
 
           # Create a new branch using the assigned issue number
           NEW_BRANCH="issue-${ISSUE_NUMBER}-assigned-to-${ASSIGNee}"
