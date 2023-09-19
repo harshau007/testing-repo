@@ -8,6 +8,8 @@ on:
 jobs:
   create-branch:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Check out code
         uses: actions/checkout@v3
@@ -22,7 +24,7 @@ jobs:
           git config user.name "GitHub Actions"
           git config credential.helper "store --file=.git-credentials"
           echo "https://github.com:${{ secrets.TOKEN }}" > .git-credentials
-          
+
           # Extract the issue number and assignee from the JSON payload
           ISSUE_NUMBER=$(jq --raw-output .issue.number "$GITHUB_EVENT_PATH")
           ASSIGNee=$(jq --raw-output .issue.assignee.login "$GITHUB_EVENT_PATH")
