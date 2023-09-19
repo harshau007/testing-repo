@@ -13,7 +13,12 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v3
-                  
+
+      
+      - name: Fetch Latest Changes
+        run: |
+          git fetch origin
+          
       - name: Create branch from issue
         env:
           SOURCE_BRANCH: main
