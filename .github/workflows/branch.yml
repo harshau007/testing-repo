@@ -26,15 +26,11 @@ jobs:
           echo "https://github.com:${{ secrets.TOKEN }}" > .git-credentials
 
           # Extract the issue number and assignee from the JSON payload
+          ISSUE_TITLE=$(jq --raw-output .issue.title "$GITHUB_EVENT_PATH")
           ISSUE_NUMBER=$(jq --raw-output .issue.number "$GITHUB_EVENT_PATH")
           ASSIGNee=$(jq --raw-output .issue.assignee.login "$GITHUB_EVENT_PATH")
-
-          # Check if there's a specific source branch in the .config file
-          if [ -f .config ]; then
-            SOURCE_BRANCH=$(cat .config)
-          fi
-
+          BRANCH_NAME=$(echo "$ISSUE_NUMBER-$ISSUE_TITLE" | tr -d '[:space:]' | tr -d '[:punct:]' | tr '[:upper:]' '[:lower:]')
+          
           # Create a new branch using the assigned issue number
-          NEW_BRANCH="issue-${ISSUE_NUMBER}-assigned-to-${ASSIGNee}"
-          git checkout -b "$NEW_BRANCH" "$SOURCE_BRANCH"
+          git checkout -b "$BRANCH_NAME" "$SOURCE_BRANCH"
           git push origin "$NEW_BRANCH"
